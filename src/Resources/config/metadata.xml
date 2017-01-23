@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="asapo_elasticsearch.metadata.converter"
+                 class="Asapo\Bundle\ElasticsearchBundle\Metadata\Converter\ClassMetadataConverter"/>
+
+        <service id="asapo_elasticsearch.metadata.driver.yaml_locator" class="Metadata\Driver\FileLocator">
+            <argument>%asapo_elasticsearch.folders%</argument>
+        </service>
+        <service id="asapo_elasticsearch.metadata.driver.yaml"
+                 class="Asapo\Bundle\ElasticsearchBundle\Metadata\Driver\YamlDriver">
+            <argument type="service" id="asapo_elasticsearch.metadata.driver.yaml_locator"/>
+            <argument type="service" id="asapo_elasticsearch.metadata.converter"/>
+        </service>
+
+        <service id="asapo_elasticsearch.metadata.driver.annotation_reader" class="Doctrine\Common\Annotations\AnnotationReader"/>
+        <service id="asapo_elasticsearch.metadata.driver.annotation"
+                 class="Asapo\Bundle\ElasticsearchBundle\Metadata\Driver\AnnotationDriver">
+            <argument type="service" id="asapo_elasticsearch.metadata.driver.annotation_reader"/>
+        </service>
+
+        <service id="asapo_elasticsearch.metadata.driver.chain" class="Metadata\Driver\DriverChain">
+            <argument type="collection">
+                <argument type="service" id="asapo_elasticsearch.metadata.driver.yaml"/>
+                <argument type="service" id="asapo_elasticsearch.metadata.driver.annotation"/>
+            </argument>
+        </service>
+
+        <service id="asapo_elasticsearch.metadata.factory" class="Metadata\MetadataFactory">
+            <argument type="service" id="asapo_elasticsearch.metadata.driver.chain"/>
+        </service>
+
+        <service id="asapo_elasticsearch.metadata.collector"
+                 class="Asapo\Bundle\ElasticsearchBundle\Metadata\MetadataCollector">
+            <argument>%asapo_elasticsearch.mapping%</argument>
+            <argument type="service" id="asapo_elasticsearch.metadata.converter"/>
+            <argument type="service" id="asapo_elasticsearch.metadata.factory"/>
+        </service>
+    </services>
+</container>

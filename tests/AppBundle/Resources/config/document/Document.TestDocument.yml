@@ -1,0 +1,8 @@
+AppBundle\Document\TestDocument:
+    type: test
+    properties:
+        title:
+            type: string
+        description:
+            type: string
+            analyzer: german

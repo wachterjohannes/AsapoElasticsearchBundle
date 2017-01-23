@@ -68,3 +68,10 @@ swiftmailer:
     username:  "%mailer_user%"
     password:  "%mailer_password%"
     spool:     { type: memory }
+
+asapo_elasticsearch:
+    metadata:
+        folders:
+            AppBundle: "%kernel.root_dir%/../tests/AppBundle/Resources/config/document"
+        mapping:
+            AppBundle\Document\TestDocument: ~
